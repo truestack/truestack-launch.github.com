@@ -1,4 +1,4 @@
-/* 
+/*
 Theme Name: Launch Effect
 Theme URI: http://www.launcheffectapp.com/lite
 Author: Barrel
@@ -12,3 +12,9 @@ Tags: one-column, two-columns, left-sidebar, fixed-width, flexible-width, custom
 This theme, like WordPress, is licensed under the GPL.
 Launch something today!
 */
+
+body {
+  background: url(http://truestack.herokuapp.com/assets/truestack-logo.svg);
+  background-repeat: no-repeat;
+  background-position: 0% 100%;
+}

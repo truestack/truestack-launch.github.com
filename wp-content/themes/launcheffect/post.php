@@ -1,12 +1,12 @@
 <?php
 /**
- * Post.php 
+ * Post.php
  *
  * Sends the data from the Launch module
  *
  * @package WordPress
  * @subpackage Launch Effect
- * 
+ *
  */
 
 // INCLUDE WORDPRESS STUFF
@@ -27,7 +27,7 @@ $aweberConsumerSecret = get_option('lefx_aweberconsumersecret');
 
 
 // grab your List's Unique Id by going to http://admin.mailchimp.com/lists/
-// Click the "settings" link for the list - the Unique Id is at the bottom of that page. 
+// Click the "settings" link for the list - the Unique Id is at the bottom of that page.
 $list_id = get_option('lefx_mclistid');
 
 if(get_option('lefx_mcdouble') == true) {
@@ -50,28 +50,28 @@ $return_arr = array();
 $required = array();
 $pass_thru_error = '';
 
-if(isset($_POST['email'])){ 
+if(isset($_POST['email'])){
 
 
 if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 
 	$email_check = 'valid';
-	
+
 	$postEmail = $_POST['email'];
 	$count = countCheck($stats_table, 'email', $postEmail);
 
 	if ($count > 0) {
-		
+
 		$reuser = 'true';
-		
+
 		$stats = getDetail($stats_table, 'email', $_POST['email']);
-		
+
 		foreach ($stats as $stat) {
 			$clicks = $stat->visits;
 			$conversions = $stat->conversions;
 			$returncode = $stat->code;
 		}
-		
+
 	} else {
 		$reuser = 'false';
 		$premium = null;
@@ -83,39 +83,39 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 		$cm_name = '';
 		$mc_firstname = '';
 		$mc_lastname = '';
-		// Custom Fields		
+		// Custom Fields
 		if(lefx_version() == 'premium')
 		{
 			$premium = array();
 			$premium['fields'] = array();
 			$premium['values'] = array();
 			$postfields = array();
-	
+
 			for($i=1; $i<=10; $i++)
 			{
-			
-						
+
+
 				if(isset($_POST["field$i"]))
 				{
-					
+
 					$option = trim(preg_replace('/[^a-zA-Z 0-9]+/', '', get_option("lefx_cust_field{$i}")));
 					$fieldname =  "LE " . $option;
-					
+
 					if(is_array($_POST["field$i"]))
 					{
-						
+
 						$postfields["field$i"] = implode(',', $_POST["field$i"]);
 					}
 					else
 						$postfields["field$i"] = $_POST["field$i"];
-					
+
 					if(get_option("lefx_cust_field{$i}_required") == "on" && (!$postfields["field$i"] || trim($postfields["field$i"]) == ''))
 					array_push($required, "lefx_cust_field{$i}");
-				
+
 					array_push($premium['fields'], "custom_field$i");
 					array_push($premium['values'], $postfields["field$i"]);
-					
-					
+
+
 					// Mail Chimp
 					if(strtolower(trim($option)) != 'first name' && strtolower(trim($option)) != 'last name')
 					{
@@ -125,20 +125,20 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 						$mc_firstname = $postfields["field$i"];
 					else if(strtolower(trim($option)) == 'last name')
 						$mc_lastname = $postfields["field$i"];
-					
-					
-					// AWeber	
+
+
+					// AWeber
 					if(strtolower(trim($option)) != 'name')
 					{
 						if($postfields["field$i"] != '')
 						{
 							$aweber_custom_fields["LE " . str_replace(' ','_', $option)] = substr($postfields["field$i"],0,100);
 						}
-						
+
 					}
 					else
 						$aweber_name = substr($postfields["field$i"],0,100);
-					
+
 					//Campaign Monitor
 					if(strtolower(trim($option)) != 'name')
 					{
@@ -147,10 +147,10 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 					}
 					else if(strtolower(trim($option)) == 'name')
 					{
-						// use aweber name, or else combine mailchimp first and last, else empty	
+						// use aweber name, or else combine mailchimp first and last, else empty
 						$cm_name = $aweber_name;
 					}
-					
+
 				}
 				else
 				{
@@ -158,28 +158,28 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 						array_push($required, "lefx_cust_field{$i}");
 				}
 			}
-			
+
 			// Use firstname & lastname if available
 			if(($mc_firstname || $mc_lastname) && $aweber_name == '')
 			{
 				$aweber_name = $cm_name = trim($mc_firstname . ' ' . $mc_lastname);
-				
+
 			}
 		}
-			
+
 		// set field names
 		$le_fields = array('LE Referral Code', 'LE Visits', 'LE Signups');
 	    $aweber_le_fields = array_merge($le_fields, array_keys($aweber_custom_fields));
 	    $cm_le_fields = array_merge($le_fields, array_keys($cm_le_fields));
-		
-		
+
+
 		if(!count($required))
 		{
 			postData($stats_table, $referralpost, $premium);
-			
+
 				// MailChimp integration
 				if($chimpkey) {
-				
+
 					$chimpvars = $api->listMergeVars(get_option('lefx_mclistid'));
 					//-----------
 					$tags = array();
@@ -192,41 +192,41 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 					//-----------
 					$chimpvars = array_flatten($chimpvars);
 					$mergeVars = array('FNAME' => $mc_firstname, 'LNAME' => $mc_lastname);
-					
+
 					if($chimp_custom_fields) {
 						foreach($chimp_custom_fields as $fieldtag => $field)
 						{
 							$pos = array_search($fieldtag, $tags);
-							
+
 							if ($pos === false) {
-								
+
 								$api->listMergeVarAdd($list_id, $fieldtag, $field['name'], array('public' => false));
 							}
 							else if($names[$pos] != $field['name'])
 							{
 								$api->listMergeVarUpdate($list_id, $fieldtag, array('name' => $field['name']));
 							}
-							
+
 							$mergeVars[$fieldtag] = $field['value'];
 						}
 					}
-					
-					$api->listSubscribe($list_id, $_POST['email'],$mergeVars,'html',$opt_in );	
+
+					$api->listSubscribe($list_id, $_POST['email'],$mergeVars,'html',$opt_in );
 				}
-				
+
 				//Campaign Monitor Integration
 				if($cmkey != '' && $cmclient != '' && $cmlist != '') // if client is undefined, ignore list value
 				{
 					$list = new CS_REST_Lists($cmlist, $cmkey);
 					$subscribers = new CS_REST_Subscribers($cmlist, $cmkey);
-					
+
 					$cust_fields = $list->get_custom_fields();
 					$existing_fields = $cust_fields->response;
-		
+
 					if($cm_le_fields)
-					{	
+					{
 						foreach($existing_fields as $field)
-						{	
+						{
 							$pos = array_search($field->FieldName, $cm_le_fields);
 							if($pos !== false)
 							{
@@ -241,11 +241,11 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 							));
 						}
 					}
-							
+
 					array_push($cm_custom_field_values, array('Key' => "LE Referral Code", 'Value' => $_POST['code']));
 					array_push($cm_custom_field_values, array('Key' => "LE Visits", 'Value' => '0'));
 					array_push($cm_custom_field_values, array('Key' => "LE Signups", 'Value' => '0'));
-					
+
 					$result = $subscribers->add(
 						array(
 						    'EmailAddress' => $_POST['email'],
@@ -257,7 +257,7 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 		//			print_r($result);
 		//			echo 'users added';
 				}
-				
+
 				// AWeber integration
 				if($aweberConsumerKey != '' && $aweberConsumerSecret != '')
 				{
@@ -265,17 +265,17 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 					$aweberAccessSecret = get_option('lefx_aweberaccesssecret');
 					$aweberListId  = get_option('lefx_aweberlistid');
 					$aweberAccountId = get_option('lefx_aweberaccountid');
-					
+
 					$aweber = new AWeberAPI($aweberConsumerKey, $aweberConsumerSecret);
-					
-					
+
+
 					try {
-					
-						
+
+
 					    $account = $aweber->getAccount($aweberAccessKey, $aweberAccessSecret);
 					    $listURL = "/accounts/{$aweberAccountId}/lists/{$aweberListId}";
 					    $list = $account->loadFromUrl($listURL);
-		
+
 					    # create a subscriber
 					    $params = array(
 					        'email' => $_POST['email'],
@@ -284,9 +284,9 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 					        'last_followup_message_number_sent' => 0,
 					        'misc_notes' => 'launch effect subscription',
 					        'name' => $aweber_name,
-					        
+
 					    );
-					    
+
 					    //add custom fields
 						$aweber_fields = $list->custom_fields;
 						$existing_field_names = array();
@@ -300,9 +300,9 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 							if(!in_array($fieldname, $existing_field_names))
 					    		$aweber_fields->create(array('name' => $fieldname));
 					    }
-					    
-					    
-					    
+
+
+
 					    if(count($aweber_custom_fields))
 						{
 							$params['custom_fields'] = $aweber_custom_fields;
@@ -310,14 +310,14 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 						$params['custom_fields']['LE Referral Code'] = $_POST['code'];
 						$params['custom_fields']['LE Visits'] = "0";
 						$params['custom_fields']['LE Signups'] = "0";
-					    $subscribers = $list->subscribers;			    
+					    $subscribers = $list->subscribers;
 					    $new_subscriber = $subscribers->create($params);
-		
+
 					    # success!
-					
+
 					} catch(AWeberAPIException $exc) {
-					    
-					    
+
+
 					    if(trim($exc->message) == "email: Subscriber already subscribed.")
 					    {
 							// do nothing
@@ -335,15 +335,15 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 					    	print "<hr>";
 					    	exit(1);
 					    }
-						
+
 					}
 				}
 			}
-		}				
+		}
 	} else {
-	
+
 	    $email_check = 'invalid';
-	
+
 	}
 		$return_arr["email_check"] = $email_check;
 		$return_arr["required"] = $required;
@@ -354,14 +354,14 @@ if(filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) {
 		$return_arr["returncode"] = $returncode;
 		$return_arr["email"] = $_POST['email'];
 		$return_arr["code"] = $_POST['code'];
-	
-	} else if(!isset($_POST)){ 
-	
-		echo "hmmm..."; 
-	
-	}  
-	
+
+	} else if(!isset($_POST)){
+
+		echo "hmmm...";
+
+	}
+
 	echo json_encode($return_arr);
-	
+
 
 ?>
