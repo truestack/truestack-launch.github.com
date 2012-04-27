@@ -1,0 +1,11 @@
+Launch Effect v2.17 Change Log
+
+[Fix] Major speed improvements
+[Fix] Facebook Like/Send issues
+[Fix] Admin sections not expanding when clicking from floating nav
+[New Feature!] Returning user? tooltip is now customizable
+[New Feature!] Privacy Policy now accepts code so you can use a third-party policy generator
+[Admin] Added instructional modals for Typekit/Monotype
+[Update] Added explicit 'og:description' to open graph for Facebook
+[Update] Theme doesn't rely on getimagesize() anymore to calculate image heights where needed.
+[Update] Code cleanup and consolidation

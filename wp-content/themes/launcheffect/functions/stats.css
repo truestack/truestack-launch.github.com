@@ -1,0 +1,166 @@
+/* STATS PAGE */
+
+#stats-wrapper table {
+	background:#fff;
+	width:90%;
+}
+
+#stats-wrapper table td, #stats-wrapper table th {
+	padding:15px;
+	border-bottom:1px solid #eee;
+}
+
+#stats-wrapper table th {
+	font-weight:bold;
+	color:#fff;
+	background-color:#146095;
+	text-transform: uppercase;
+	font-size:0.8em;
+	background-image: url('im/arrow_sort.png');
+	background-position: 15px 19px;
+	background-repeat: no-repeat;
+	padding-left:25px;
+	white-space:nowrap;
+}
+
+#stats-wrapper table th.nosort {
+	background-image:none;
+	padding-left:15px;
+}
+
+#stats-wrapper table th a {
+	color:#fff;
+	text-decoration:none;
+}
+
+#stats-wrapper table th a:hover {
+	color:#eee;
+}
+
+#stats-wrapper p {
+	font-size:1.1em;
+	color:#aaa;
+	padding:0;
+	margin:15px 0;
+	background:white;
+	width:900px;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#stats-wrapper p a {
+	color: #AEC641 !important;
+}
+
+#stats-wrapper .get-csv-button {
+	font-size:0.7em;
+	color: #333;
+	font-weight:bold;
+	text-transform:uppercase;
+	font-family: Arial, Helvetica, sans-serif;
+	text-decoration: none;
+}
+
+#stats-wrapper .get-csv-button:hover {
+	color:#555;
+}
+
+#stats-wrapper a.stats-back {
+	text-decoration:none;
+	font-size:0.8em;
+	text-transform:uppercase;
+	font-weight:bold;
+}
+
+.stats-header {
+	width:880px;
+	overflow:hidden;
+}
+
+#stats-wrapper h3 {
+	float:left;
+}
+
+#stats-wrapper span.refby {
+	font-weight:bold;
+	text-decoration: none;
+	font-family: Arial, Helvetica, sans-serif;
+	color:#aaa;
+	display:block;
+	float:right;
+}
+
+#stats-wrapper span.refby a {
+	color: #AEC641 !important;
+	text-decoration:underline;
+}
+
+#stats-wrapper ul.pagination {
+	margin:15px 0 0 0;
+}
+
+#stats-wrapper ul.pagination li {
+	float:left;
+	margin:0 5px;
+	font-size:0.8em;
+	font-weight:bold;
+}
+
+#stats-wrapper ul.pagination li a.currentpage {
+	color:#333;
+	text-decoration: none;
+	cursor:default;
+}
+
+/* EXPORT CSV */
+
+#le-export {
+	border:1px solid #6FA9D6;
+	padding:30px;
+	margin-top:35px;
+	color:#333;
+	overflow:hidden;
+	background:#D9F1FD;
+	width:740px;
+}
+
+#le-export h3 {
+	font-size:20px;
+	margin-top:0;
+	color:#14618B;
+}
+
+#le-export p {
+	font-size:14px;
+}
+
+#le-export a {
+	color: #14618B;
+}
+
+span.submit.export-button input {
+	display:block;
+	margin:20px 0 0 0;
+	text-align:center;
+	background:#61bbd8;
+	color:#093958;
+	font-size:14px !important;
+	text-transform:uppercase;
+	border:1px solid #57a7c0;
+	text-shadow: 0px 1px 1px #eee;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	cursor:pointer;
+	font-weight:bold;
+	padding:10px 25px;
+}
+
+span.submit.export-button input:hover {
+	border:1px solid #14618B;
+}
+
+
+/* ICON */
+.le-icons {
+	background:url('im/launch_icon.png') no-repeat;
+}
