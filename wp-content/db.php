@@ -34,14 +34,3 @@ else
 // Here happens all the magic
 require_once( PG4WP_ROOT.'/core.php');
 } // Protection against multiple loading
-
-// Heroku Postgres settings
-if (isset($_ENV["DATABASE_URL"])) {
-  $db = parse_url($_ENV["DATABASE_URL"]);
-  define(‘DB_NAME’, trim($db["path"],”/”));
-  define(‘DB_USER’, $db["user"]);
-  define(‘DB_PASSWORD’, $db["pass"]);
-  define(‘DB_HOST’, $db["host"]);
-} else {
-  die(“Can’t determine database settings from DATABASE_URL\n”);
-}
